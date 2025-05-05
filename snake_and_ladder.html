@@ -54,6 +54,11 @@
       padding: 10px 20px;
       font-size: 16px;
     }
+
+    .dice-img {
+      width: 60px;
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
@@ -63,7 +68,8 @@
   <button onclick="roll()">Player 1 Roll</button>
   <button onclick="rollPlayer2()">Player 2 Roll</button>
 
-  
+  <img id="dice" src="./assets/dice1.png" alt="Dice" class="dice-img">
+
   <audio id="dice-sound" src="./assets/diceroll.mp3" preload="auto"></audio>
 
   <script>
@@ -85,7 +91,13 @@
     }
 
     let count = 1;
+    let count2 = 1;
     let currentToken = null;
+    let currentToken2 = null;
+
+    function updateDiceImage(value) {
+      document.getElementById("dice").src = `./assets/dice${value}.png`;
+    }
 
     function roll() {
       const audio = document.getElementById("dice-sound");
@@ -93,11 +105,12 @@
       audio.play();
 
       const rollValue = Math.floor(Math.random() * 6) + 1;
+      updateDiceImage(rollValue);
+
       if (count + rollValue <= 100) {
         count += rollValue;
         if (count in movements) count = movements[count];
       }
-      console.log("Player 1 Rolled:", rollValue, "Position:", count);
 
       if (currentToken && currentToken.parentElement) {
         currentToken.parentElement.removeChild(currentToken);
@@ -109,20 +122,18 @@
       tile.appendChild(currentToken);
     }
 
-    let count2 = 1;
-    let currentToken2 = null;
-
     function rollPlayer2() {
       const audio = document.getElementById("dice-sound");
       audio.currentTime = 0;
       audio.play();
 
       const rollValue = Math.floor(Math.random() * 6) + 1;
+      updateDiceImage(rollValue);
+
       if (count2 + rollValue <= 100) {
         count2 += rollValue;
         if (count2 in movements) count2 = movements[count2];
       }
-      console.log("Player 2 Rolled:", rollValue, "Position:", count2);
 
       if (currentToken2 && currentToken2.parentElement) {
         currentToken2.parentElement.removeChild(currentToken2);
