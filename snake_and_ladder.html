@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake and Ladder Game</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(10, 50px);
+      grid-template-rows: repeat(10, 50px);
+      width: 500px;
+      height: 500px;
+      background-image: url('./assets/snake-n-ladder.png');
+      background-size: cover;
+      border: 2px solid #000;
+    }
+
+    .container div {
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      font-size: 12px;
+    }
+
+    .player {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .player1 {
+      background-color: orange;
+      bottom: 2px;
+      right: 2px;
+    }
+
+    .player2 {
+      background-color: blue;
+      bottom: 20px;
+      right: 2px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="board"></div>
+
+  <button onclick="roll()">Player 1 Roll</button>
+  <button onclick="rollPlayer2()">Player 2 Roll</button>
+
+  
+  <audio id="dice-sound" src="./assets/diceroll.mp3" preload="auto"></audio>
+
+  <script>
+    const board = document.getElementById('board');
+    let reverse = true;
+    const movements = {
+      4: 25, 13: 46, 33: 49, 42: 63, 50: 69, 62: 81, 74: 92,
+      27: 5, 40: 3, 43: 18, 54: 31, 66: 45, 76: 58, 89: 53, 99: 41,
+    };
+
+    for (let row = 9; row >= 0; row--) {
+      for (let col = 0; col < 10; col++) {
+        const num = row * 10 + (reverse ? 9 - col + 1 : col + 1);
+        const div = document.createElement('div');
+        div.classList.add(`tile${num}`);
+        board.appendChild(div);
+      }
+      reverse = !reverse;
+    }
+
+    let count = 1;
+    let currentToken = null;
+
+    function roll() {
+      const audio = document.getElementById("dice-sound");
+      audio.currentTime = 0;
+      audio.play();
+
+      const rollValue = Math.floor(Math.random() * 6) + 1;
+      if (count + rollValue <= 100) {
+        count += rollValue;
+        if (count in movements) count = movements[count];
+      }
+      console.log("Player 1 Rolled:", rollValue, "Position:", count);
+
+      if (currentToken && currentToken.parentElement) {
+        currentToken.parentElement.removeChild(currentToken);
+      }
+
+      const tile = document.getElementsByClassName(`tile${count}`)[0];
+      currentToken = document.createElement('div');
+      currentToken.className = 'player player1';
+      tile.appendChild(currentToken);
+    }
+
+    let count2 = 1;
+    let currentToken2 = null;
+
+    function rollPlayer2() {
+      const audio = document.getElementById("dice-sound");
+      audio.currentTime = 0;
+      audio.play();
+
+      const rollValue = Math.floor(Math.random() * 6) + 1;
+      if (count2 + rollValue <= 100) {
+        count2 += rollValue;
+        if (count2 in movements) count2 = movements[count2];
+      }
+      console.log("Player 2 Rolled:", rollValue, "Position:", count2);
+
+      if (currentToken2 && currentToken2.parentElement) {
+        currentToken2.parentElement.removeChild(currentToken2);
+      }
+
+      const tile = document.getElementsByClassName(`tile${count2}`)[0];
+      currentToken2 = document.createElement('div');
+      currentToken2.className = 'player player2';
+      tile.appendChild(currentToken2);
+    }
+  </script>
+
+</body>
+</html>
